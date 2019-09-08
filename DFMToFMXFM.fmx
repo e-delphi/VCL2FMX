@@ -1,0 +1,104 @@
+object DFMtoFMXConvert: TDFMtoFMXConvert
+  Left = 0
+  Top = 0
+  Caption = 'VCL2FMX'
+  ClientHeight = 545
+  ClientWidth = 465
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  OnCreate = FormCreate
+  OnClose = FormClose
+  DesignerMasterStyle = 0
+  object BtnOpenFile: TButton
+    Position.X = 16.000000000000000000
+    Position.Y = 8.000000000000000000
+    Size.Width = 80.000000000000000000
+    Size.Height = 22.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    Text = 'Abrir DFM'
+    OnClick = BtnOpenFileClick
+  end
+  object mmOutput: TMemo
+    Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+    DataDetectorTypes = []
+    StyledSettings = [Size, Style, FontColor]
+    TextSettings.Font.Family = 'Courier New'
+    Position.X = 16.000000000000000000
+    Position.Y = 288.000000000000000000
+    Size.Width = 433.000000000000000000
+    Size.Height = 241.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 2
+    Viewport.Width = 429.000000000000000000
+    Viewport.Height = 237.000000000000000000
+  end
+  object BtnProcess: TButton
+    Position.X = 104.000000000000000000
+    Position.Y = 8.000000000000000000
+    Size.Width = 80.000000000000000000
+    Size.Height = 22.000000000000000000
+    Size.PlatformDefault = False
+    StyleLookup = 'BtnProcessStyle1'
+    TabOrder = 3
+    Text = 'Processar'
+    OnClick = BtnProcessClick
+  end
+  object BtnEditIniFile: TButton
+    Position.X = 280.000000000000000000
+    Position.Y = 8.000000000000000000
+    Size.Width = 80.000000000000000000
+    Size.Height = 22.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 4
+    Text = 'Editar INI'
+    OnClick = BtnEditIniFileClick
+  end
+  object BtnSaveIni: TButton
+    Enabled = False
+    Position.X = 368.000000000000000000
+    Position.Y = 8.000000000000000000
+    Size.Width = 80.000000000000000000
+    Size.Height = 22.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 5
+    Text = 'Gravar INI'
+    OnClick = BtnSaveIniClick
+  end
+  object BtnSaveFMX: TButton
+    Position.X = 192.000000000000000000
+    Position.Y = 7.000000000000000000
+    Size.Width = 80.000000000000000000
+    Size.Height = 22.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 6
+    Text = 'Salvar FMX'
+    OnClick = BtnSaveFMXClick
+  end
+  object dlgAbrir: TOpenDialog
+    Filter = 
+      'DFM Files|*.dfm|Pascal Source|*.pas|FireMonkey|*.fmx|All Files *' +
+      '.*|*.*'
+    Title = 'Find DFM'
+    Left = 312
+  end
+  object dlgSalvar: TSaveDialog
+    Filter = 'Firemonkey|*.FMX|All Files *.*| *.*'
+    Left = 384
+  end
+  object mmInput: TMemo
+    Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+    DataDetectorTypes = []
+    StyledSettings = [Size, Style, FontColor]
+    TextSettings.Font.Family = 'Courier New'
+    Position.X = 16.000000000000000000
+    Position.Y = 40.000000000000000000
+    Size.Width = 433.000000000000000000
+    Size.Height = 241.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 1
+    Viewport.Width = 429.000000000000000000
+    Viewport.Height = 237.000000000000000000
+  end
+end
