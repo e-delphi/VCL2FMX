@@ -1,7 +1,7 @@
 # VCL2FMX
 Conversor VCL para FMX
 
-![](https://github.com/e-delphi/VCL2FMX/blob/master/app.png)
+![](https://github.com/e-delphi/VCL2FMX/blob/99e72a04b5a39550787a103de818a6da8824c284/app.png)
 ![](https://github.com/e-delphi/VCL2FMX/blob/master/cfg.png)
 
 Fork de https://github.com/rogerinnova/Delphi-Firemonkey-Dunit
