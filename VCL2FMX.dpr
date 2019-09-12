@@ -5,7 +5,8 @@ uses
   FMX.Forms,
   CvtrObj in 'CvtrObj.pas',
   DFMToFMXFM in 'DFMToFMXFM.pas' {DFMtoFMXConvert},
-  PatchLib in 'PatchLib.pas';
+  PatchLib in 'PatchLib.pas',
+  CONFIGINI in 'CONFIGINI.pas' {INI};
 
 {$R *.res}
 
