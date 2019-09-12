@@ -1,0 +1,109 @@
+object INI: TINI
+  Left = 0
+  Top = 0
+  Caption = 'Configurador INI'
+  ClientHeight = 480
+  ClientWidth = 456
+  Position = ScreenCenter
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  OnCreate = FormCreate
+  OnClose = FormClose
+  DesignerMasterStyle = 0
+  object tvINI: TTreeView
+    Align = Client
+    Size.Width = 456.000000000000000000
+    Size.Height = 406.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    Viewport.Width = 452.000000000000000000
+    Viewport.Height = 402.000000000000000000
+  end
+  object pnlTop: TPanel
+    Align = Top
+    Size.Width = 456.000000000000000000
+    Size.Height = 74.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 1
+    object btnAdicionar: TButton
+      Position.X = 296.000000000000000000
+      Position.Y = 42.000000000000000000
+      Size.Width = 73.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      Text = 'Adicionar'
+      OnClick = btnAdicionarClick
+    end
+    object edtVCL: TEdit
+      Touch.InteractiveGestures = [LongTap, DoubleTap]
+      TabOrder = 3
+      Position.X = 8.000000000000000000
+      Position.Y = 42.000000000000000000
+      Size.Width = 129.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+      TextPrompt = 'VCL'
+    end
+    object edtFMX: TEdit
+      Touch.InteractiveGestures = [LongTap, DoubleTap]
+      TabOrder = 2
+      Position.X = 160.000000000000000000
+      Position.Y = 42.000000000000000000
+      Size.Width = 129.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+      TextPrompt = 'FMX'
+    end
+    object lbEqual: TLabel
+      Position.X = 144.000000000000000000
+      Position.Y = 42.000000000000000000
+      Size.Width = 17.000000000000000000
+      Size.Height = 17.000000000000000000
+      Size.PlatformDefault = False
+      Text = '='
+      TabOrder = 4
+    end
+    object btnRemover: TButton
+      Position.X = 376.000000000000000000
+      Position.Y = 42.000000000000000000
+      Size.Width = 73.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+      Text = 'Remover'
+      OnClick = btnRemoverClick
+    end
+    object btnSalvar: TButton
+      Position.X = 376.000000000000000000
+      Position.Y = 10.000000000000000000
+      Size.Width = 72.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 5
+      Text = 'Salvar'
+      OnClick = btnSalvarClick
+    end
+    object btnAbrir: TButton
+      Position.X = 296.000000000000000000
+      Position.Y = 10.000000000000000000
+      Size.Width = 72.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 6
+      Text = 'Abrir'
+      OnClick = btnAbrirClick
+    end
+    object edtINI: TEdit
+      Touch.InteractiveGestures = [LongTap, DoubleTap]
+      TabOrder = 7
+      Position.X = 8.000000000000000000
+      Position.Y = 10.000000000000000000
+      Size.Width = 281.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+      TextPrompt = 'Arquivo'
+    end
+  end
+end
