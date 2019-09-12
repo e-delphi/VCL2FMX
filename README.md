@@ -7,6 +7,7 @@ Conversor VCL para FMX
 Fork de https://github.com/rogerinnova/Delphi-Firemonkey-Dunit
 
 Melhorias:
+- Editor de configurações
 - Adicioado suporte para LiveBindings
   - Coneversão de links DBEdit e DBGrid para uso de LiveBindings
 - Coneversão de TImage
