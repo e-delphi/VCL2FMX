@@ -43,6 +43,7 @@ type
     procedure btnSalvarClick(Sender: TObject);
     procedure btnAbrirClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure tvINIClick(Sender: TObject);
   end;
 
 implementation
@@ -200,6 +201,15 @@ begin
   finally
     Ini.Free;
   end;
+end;
+
+procedure TINI.tvINIClick(Sender: TObject);
+begin
+  if not Assigned(tvINI.Selected) then
+    Exit;
+
+  edtVCL.Text := Copy(tvINI.Selected.Text, 1, Pred(Pos('=', tvINI.Selected.Text)));
+  edtFMX.Text := Copy(tvINI.Selected.Text, Succ(Pos('=', tvINI.Selected.Text)));
 end;
 
 end.

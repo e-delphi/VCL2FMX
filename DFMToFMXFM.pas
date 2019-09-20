@@ -35,8 +35,8 @@ type
     procedure BtnProcessClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure BtnSaveFMXClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnConfiguracoesClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     DFMObj: TDfmToFmxObject;
     FIniFileName: String;
@@ -48,6 +48,7 @@ type
     Procedure RegIniLoad;
     Procedure RegIniSave;
     Procedure UpdateForm;
+    function MyMessageDialog(const AMessage: string; const ADialogType: TMsgDlgType; const AButtons: TMsgDlgButtons; const ADefaultButton: TMsgDlgBtn): Integer;
   end;
 
 var
@@ -59,11 +60,13 @@ implementation
 
 uses
   PatchLib,
-  CONFIGINI;
+  CONFIGINI,
+  FMX.DialogService;
 
 procedure TDFMtoFMXConvert.btnConfiguracoesClick(Sender: TObject);
 begin
   TINI.Create(Self).ShowModal;
+  RegIniLoad;
 end;
 
 procedure TDFMtoFMXConvert.BtnOpenFileClick(Sender: TObject);
@@ -121,6 +124,30 @@ begin
   UpdateForm;
 end;
 
+function TDFMtoFMXConvert.MyMessageDialog(const AMessage: string; const ADialogType: TMsgDlgType; const AButtons: TMsgDlgButtons; const ADefaultButton: TMsgDlgBtn): Integer;
+var
+  mr: TModalResult;
+begin
+  mr := mrNone;
+
+  TDialogService.MessageDialog(
+    AMessage,
+    ADialogType,
+    AButtons,
+    ADefaultButton,
+    0,
+    procedure (const AResult: TModalResult)
+    begin
+      mr := AResult
+    end
+  );
+
+  while mr = mrNone do // wait for modal result
+    Application.ProcessMessages;
+
+  Result := mr;
+end;
+
 procedure TDFMtoFMXConvert.BtnSaveFMXClick(Sender: TObject);
 begin
   if DFMObj = nil then
@@ -142,7 +169,11 @@ begin
 
       if FileExists(FOutFmxFileName) or FileExists(FOutPasFileName) then
       begin
-        if MessageDlg('Substituir Arquivos Existentes: '+ FOutFmxFileName +' e/ou '+ FOutPasFileName, TMsgDlgType.mtWarning, [TMsgDlgBtn.mbOK, TMsgDlgBtn.mbCancel], 0) = mrOk then
+        if myMessageDialog(
+          'Substituir Arquivos Existentes: '+ FOutFmxFileName +' e/ou '+ FOutPasFileName,
+          TMsgDlgType.mtWarning,
+          [TMsgDlgBtn.mbOK, TMsgDlgBtn.mbCancel],
+          TMsgDlgBtn.mbOK) = mrOk then
         begin
           DeleteFile(FOutFmxFileName);
           DeleteFile(FOutPasFileName);
@@ -212,7 +243,6 @@ var
 begin
   RegFile := GetRegFile;
   try
-    RegFile.WriteString('Files', 'inifile', FIniFileName);
     RegFile.WriteString('Files', 'InputDFm', FInDfmFileName);
     RegFile.WriteString('Files', 'OutputPas', FOutPasFileName);
   finally

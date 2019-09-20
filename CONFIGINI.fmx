@@ -17,6 +17,7 @@ object INI: TINI
     Size.Height = 406.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 0
+    OnClick = tvINIClick
     Viewport.Width = 452.000000000000000000
     Viewport.Height = 402.000000000000000000
   end

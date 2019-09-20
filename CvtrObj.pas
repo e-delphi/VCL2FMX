@@ -12,12 +12,9 @@ uses
   Winapi.Windows,
   inifiles,
   FMX.Objects,
-  Vcl.ExtCtrls,
-  Vcl.Graphics,
-  Vcl.Imaging.Jpeg,
-  Vcl.Imaging.GIFImg,
-  Vcl.Imaging.PngImage,
-  System.Generics.Collections;
+  System.Generics.Collections,
+  Image,
+  ImageList;
 
 type
   TLinkControl = record
@@ -38,8 +35,6 @@ type
     Columns : TArray<TLinkGridColumn>;
   end;
 
-  TGraphicAccess = class(TGraphic)
-  end;
   TDfmToFmxObject = class(TObject)
   private
     FLinkControlList: TArray<TLinkControl>;
@@ -77,9 +72,6 @@ type
     function FMXProperties(APad: String): String;
     function FMXSubObjects(APad: String): String;
     procedure ReadData(Prop: TTwoDArrayOfString; APropertyIdx: integer; AStm: TStream);
-    function ImageDFMtoFMX(sData, APad: String): String;
-    function ImageToHex(Image:FMX.Objects.TImage; LineLen:integer): String;
-    function Replace(ACurrentValue: String; APad: String = ''): String;
     function GetFMXLiveBindings: String;
     function GetPASLiveBindings: String;
   public
@@ -691,99 +683,6 @@ begin
   Prop[APropertyIdx, 1] := Prop[APropertyIdx, 1] + Data;
 end;
 
-{ Eduardo }
-function TDfmToFmxObject.ImageDFMtoFMX(sData, APad: String): String;
-var
-  Linput: String;
-  Loutput: TMemoryStream;
-  LclsName: ShortString;
-  Lgraphic: TGraphic;
-  img2: Vcl.ExtCtrls.TImage;
-  img1: FMX.Objects.TImage;
-  stream: TMemoryStream;
-begin
-  // Remove caracteres
-  sData := StringReplace(sData, '{', EmptyStr, []);
-  sData := StringReplace(sData, '}', EmptyStr, []);
-
-  // Inicializa
-  Linput  := sData;
-  Loutput := TMemoryStream.Create;
-  try
-    // Carrega dados para memoria
-    Loutput.Size := Length(Linput) div 2;
-    HexToBin(PChar(Linput), Loutput.Memory^, Loutput.Size);
-    LclsName := PShortString(Loutput.Memory)^;
-
-    // Cria imagem FMX
-    img1 := FMX.Objects.TImage.Create(nil);
-    // Cria imagem VCL
-    Lgraphic := TGraphicClass(FindClass(UTF8ToString(LclsName))).Create;
-    try
-      // Carrega dados para imagem VCL
-      Loutput.Position := 1 + Length(LclsName);
-      TGraphicAccess(Lgraphic).ReadData(Loutput);
-      img2 := TImage.Create(nil);
-      img2.Picture.Assign(Lgraphic);
-
-      // Converte de VCL para FMX
-      stream:= TMemoryStream.Create;
-      try
-        img2.Picture.SaveToStream(stream);
-        stream.Position := 0;
-        img1.Bitmap.LoadFromStream(stream);
-      finally
-        stream.Free;
-      end;
-
-      // Retorna imagem convertida de FMX para texto
-      Result := ImageToHex(img1, 64);
-    finally
-      img1.Free;
-      Lgraphic.Free;
-    end;
-  finally
-    Loutput.Free;
-  end;
-end;
-
-{ Eduardo }
-function TDfmToFmxObject.ImageToHex(Image:FMX.Objects.TImage; LineLen:integer): String;
-var
-  ms:TMemoryStream;
-  s:String;
-  t:Ansistring;
-  sl: TStringList;
-begin
-  ms := TMemoryStream.Create;
-  try
-    image.Bitmap.SaveToStream(ms);
-    SetLength(t, ms.Size * 2);
-    BinToHex(ms.Memory^, Pansichar(t), ms.Size);
-    sl := TStringList.Create;
-    try
-      repeat
-        s := Copy(String(t), 1, LineLen);
-        sl.Add(s);
-        Delete(t, 1, LineLen);
-      until t = '';
-      Result := StringReplace(sl.DelimitedText, ',', sLineBreak, [rfReplaceAll]);
-    finally
-      sl.Free;
-    end;
-  finally
-    ms.Free;
-  end;
-end;
-
-{ Eduardo }
-function TDfmToFmxObject.Replace(ACurrentValue: String; APad: String = ''): String;
-begin
-  Result := ACurrentValue;
-  Result := StringReplace(Result, '#Return#', sLineBreak + APad, [rfReplaceAll]);
-  Result := StringReplace(Result, '#Tab#', APad +'  ', [rfReplaceAll]);
-end;
-
 procedure TDfmToFmxObject.ReadProperties(AData: String; AStm: TStream; var AIdx: Integer);
 begin
   PropertyArray(AIdx);
@@ -823,10 +722,13 @@ begin
       Result := ACurrentName +' = '+ ACurrentValue;
     end
     else
-    if Pos('#Replace#', s) > 0 then
+    if Pos('#Class#', s) > 0 then
     begin
-      s := Replace(s, APad);
-      Result := StringReplace(s, '#Replace#', ImageDFMtoFMX(ACurrentValue, APad), [])
+      if FDFMClass = 'TImage' then
+        Result := StringReplace(s, '#Class#', ProcessImage(ACurrentValue, APad), [])
+      else
+      if FDFMClass = 'TImageList' then
+        Result := StringReplace(s, '#Class#', ProcessImageList(ACurrentValue, APad), [])
     end
     else
       Result := s +' = '+ ACurrentValue;
@@ -949,14 +851,5 @@ begin
   SetLength(F2DPropertyArray, FPropertyMax + 1);
   FHasMore := (Pos(AnsiString('end'),Data)=1) and not (Pos(AnsiString('end>'),Data) = 1);
 end;
-
-initialization
-  System.Classes.RegisterClass(TMetafile);
-  System.Classes.RegisterClass(TIcon);
-  System.Classes.RegisterClass(TBitmap);
-  System.Classes.RegisterClass(TWICImage);
-  System.Classes.RegisterClass(TJpegImage);
-  System.Classes.RegisterClass(TGifImage);
-  System.Classes.RegisterClass(TPngImage);
 
 end.

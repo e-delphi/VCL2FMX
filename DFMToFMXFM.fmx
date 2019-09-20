@@ -32,8 +32,8 @@ object DFMtoFMXConvert: TDFMtoFMXConvert
     Size.Height = 241.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 2
-    Viewport.Width = 433.000000000000000000
-    Viewport.Height = 241.000000000000000000
+    Viewport.Width = 429.000000000000000000
+    Viewport.Height = 237.000000000000000000
   end
   object BtnProcess: TButton
     Position.X = 104.000000000000000000
@@ -77,18 +77,18 @@ object DFMtoFMXConvert: TDFMtoFMXConvert
     Size.Height = 241.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 1
-    Viewport.Width = 433.000000000000000000
-    Viewport.Height = 241.000000000000000000
+    Viewport.Width = 429.000000000000000000
+    Viewport.Height = 237.000000000000000000
   end
   object dlgAbrir: TOpenDialog
     Filter = 
       'DFM Files|*.dfm|Pascal Source|*.pas|FireMonkey|*.fmx|All Files *' +
       '.*|*.*'
     Title = 'Find DFM'
-    Left = 264
+    Left = 256
   end
   object dlgSalvar: TSaveDialog
     Filter = 'Firemonkey|*.FMX|All Files *.*| *.*'
-    Left = 320
+    Left = 312
   end
 end

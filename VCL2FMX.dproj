@@ -145,6 +145,12 @@
             <FormType>fmx</FormType>
         </DCCReference>
         <DCCReference Include="PatchLib.pas"/>
+        <DCCReference Include="CONFIGINI.pas">
+            <Form>INI</Form>
+            <FormType>fmx</FormType>
+        </DCCReference>
+        <DCCReference Include="Image.pas"/>
+        <DCCReference Include="ImageList.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -186,7 +192,13 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Win32\Debug\VCL2FMX.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="exe\VCL2FMX.exe" Configuration="Release" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>VCL2FMX.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="exe\VCL2FMX.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>VCL2FMX.exe</RemoteName>
                         <Overwrite>true</Overwrite>
