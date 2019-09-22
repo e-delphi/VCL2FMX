@@ -1,4 +1,4 @@
-﻿unit CvtrObj;
+unit CvtrObj;
 
 interface
 
@@ -74,6 +74,7 @@ type
     procedure ReadData(Prop: TTwoDArrayOfString; APropertyIdx: integer; AStm: TStream);
     function GetFMXLiveBindings: String;
     function GetPASLiveBindings: String;
+    procedure ReadText(Prop: TTwoDArrayOfString; APropertyIdx: integer; AStm: TStream);
   public
     constructor Create(ACreateText: String; AStm: TStream; ADepth: integer);
     destructor Destroy; override;
@@ -683,6 +684,20 @@ begin
   Prop[APropertyIdx, 1] := Prop[APropertyIdx, 1] + Data;
 end;
 
+{ Eduardo }
+procedure TDfmToFmxObject.ReadText(Prop: TTwoDArrayOfString; APropertyIdx: integer; AStm: TStream);
+var
+  Data: String;
+begin
+  Data := Trim(ReadLineFrmStream(AStm));
+  while (Pos(AnsiString('+'), Data) > 0) do
+  begin
+    Prop[APropertyIdx, 1] := Prop[APropertyIdx, 1] + Data;
+    Data := Trim(ReadLineFrmStream(AStm));
+  end;
+  Prop[APropertyIdx, 1] := Prop[APropertyIdx, 1] + Data;
+end;
+
 procedure TDfmToFmxObject.ReadProperties(AData: String; AStm: TStream; var AIdx: Integer);
 begin
   PropertyArray(AIdx);
@@ -698,7 +713,10 @@ begin
     ReadItems(F2DPropertyArray, AIdx, AStm)
   else
   if (F2DPropertyArray[AIdx,1] = '{') then
-    ReadData(F2DPropertyArray, AIdx, AStm);
+    ReadData(F2DPropertyArray, AIdx, AStm)
+  else
+  if (F2DPropertyArray[AIdx,1] = '') then
+    ReadText(F2DPropertyArray, AIdx, AStm);
   Inc(AIdx);
 end;
 
