@@ -14,7 +14,7 @@ uses
 
 begin
   Application.Initialize;
-  ReportMemoryLeaksOnShutdown := True;
+  ReportMemoryLeaksOnShutdown := False;
   Application.CreateForm(TDFMtoFMXConvert, DFMtoFMXConvert);
   Application.Run;
 end.
