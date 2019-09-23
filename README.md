@@ -11,6 +11,7 @@ Melhorias:
 - Adicioado suporte para LiveBindings
   - Coneversão de links DBEdit e DBGrid para uso de LiveBindings
 - Coneversão de TImage
+- Coneversão de TImageList
 - Adicionado replace de TAlign
 - Corrigida indentação dos componentes no arquivo .fmx
 - Removidos alguns Hints e Warnigs
