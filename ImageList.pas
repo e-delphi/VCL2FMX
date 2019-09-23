@@ -18,14 +18,14 @@ type
 
 function ProcessImageList(sData, APad: String): String;
 function ImageListDFMtoFMX(sData: String): String;
-function StreamToHex(ms: TMemoryStream; LineLen:integer): String;
+procedure StreamToHex(ms:TMemoryStream; LineLen: Integer; var sResult: String);
 
 implementation
 
 uses
   FMX.ImgList,
   Vcl.Graphics,
-  System.SysUtils;
+  System.SysUtils ;
 
 var
   FPad: String;
@@ -33,21 +33,7 @@ var
 function ProcessImageList(sData, APad: String): String;
 begin
   FPad := APad;
-  Result :=    APad +'  Source = <'+
-  sLineBreak + APad +'    item '+
-  sLineBreak + APad +'      Name = '+ QuotedStr('Item 0') +
-  sLineBreak + APad +'      MultiResBitmap = < '+
-  sLineBreak + APad +'        item '+
-  sLineBreak + APad +'          PNG = {'+ ImageListDFMtoFMX(sData) +'}'+
-  sLineBreak + APad +'        end>'+
-  sLineBreak + APad +'    end> '+
-  sLineBreak + APad +'  Destination = < '+
-  sLineBreak + APad +'    item '+
-  sLineBreak + APad +'      Layers = < '+
-  sLineBreak + APad +'        item '+
-  sLineBreak + APad +'          Name = '+ QuotedStr('Item 0') +
-  sLineBreak + APad +'        end>'+
-  sLineBreak + APad +'    end>';
+  Result := ImageListDFMtoFMX(sData);
 end;
 
 function ImageListDFMtoFMX(sData: String): String;
@@ -59,6 +45,8 @@ var
   stream: TMemoryStream;
   stream2: TMemoryStream;
   bmp: TBitmap;
+  I: Integer;
+  sTemp: String;
 begin
   // Remove caracteres
   sData := StringReplace(sData, '{', EmptyStr, []);
@@ -77,33 +65,88 @@ begin
       // Carrega dados para imagem VCL
       TCustomImageListAccess(Lgraphic).ReadData(Loutput);
 
-      bmp := TBitmap.Create;
-      Lgraphic.GetBitmap(0, bmp);
-
-      // Converte de VCL para FMX
-      stream := TMemoryStream.Create;
+      // Cria imagem FMX
+      img1 := FMX.ImgList.TImageList.Create(nil);
       try
-        bmp.SaveToStream(stream);
-        stream.Position := 0;
+        // Passa por todas imagens VCL
+        for I := 0 to Pred(Lgraphic.Count) do
+        begin
+          // Converte de VCL para FMX
+          stream := TMemoryStream.Create;
+          try
+            bmp := TBitmap.Create;
+            try
+              // Obtem imagem
+              Lgraphic.GetBitmap(I, bmp);
+              // Salva no Stream
+              bmp.SaveToStream(stream);
+              bmp.SaveToFile('D:\teste.bmp');
+              // Adiciona imagem no FMX
+              stream.Position := 0;
+              img1.Source.Add.MultiResBitmap.Add.Bitmap.LoadFromStream(stream);
+            finally
+              FreeAndNil(bmp);
+            end;
+          finally
+            stream.Free;
+          end;
+        end;
 
-        // Cria imagem FMX
-        img1 := FMX.ImgList.TImageList.Create(nil);
-        try
-          img1.Source.Add.MultiResBitmap.Add.Bitmap.LoadFromStream(stream);
+        Result := '  Source = <';
 
+        // Adiciona as imagens
+        for I := 0 to Pred(img1.Source.Count) do
+        begin
           stream2 := TMemoryStream.Create;
           try
-            img1.Source.Items[0].MultiResBitmap.Items[0].Bitmap.SaveToStream(stream2);
-            Result := StreamToHex(stream2, 64);
+            img1.Source.Items[I].MultiResBitmap.Items[0].Bitmap.SaveToStream(stream2);
+
+            sTemp := EmptyStr;
+            StreamToHex(stream2, 64, sTemp);
+
+            Result := Result +
+            sLineBreak + FPad +'    item '+
+            sLineBreak + FPad +'      MultiResBitmap.Height = '+ img1.Source.Items[I].MultiResBitmap.Items[0].Bitmap.Height.ToString +
+            sLineBreak + FPad +'      MultiResBitmap.Width = '+ img1.Source.Items[I].MultiResBitmap.Items[0].Bitmap.Width.ToString +
+            sLineBreak + FPad +'      MultiResBitmap = < '+
+            sLineBreak + FPad +'        item '+
+            sLineBreak + FPad +'          Width = 256 '+
+            sLineBreak + FPad +'          Height = 256 '+
+            sLineBreak + FPad +'          PNG = {'+ sTemp +'}'+
+            sLineBreak + FPad +'          FileName = '+ QuotedStr('') +
+            sLineBreak + FPad +'        end>'+
+            sLineBreak + FPad +'      Name = '+ QuotedStr('Item '+ I.ToString) +
+            sLineBreak + FPad +'    end';
+
+            if Pred(img1.Source.Count) = I then
+              Result := Result +'>';
           finally
-            stream2.Free;
+            FreeAndNil(stream2);
           end;
-        finally
-          img1.Free;
+        end;
+
+        Result := Result +
+        sLineBreak + FPad +'  Destination = < ';
+
+        // Adiciona os itens
+        for I := 0 to Pred(img1.Source.Count) do
+        begin
+          Result := Result +
+          sLineBreak + FPad +'    item '+
+          sLineBreak + FPad +'      Layers = < '+
+          sLineBreak + FPad +'        item '+
+          sLineBreak + FPad +'          Name = '+ QuotedStr('Item '+ I.ToString) +
+          sLineBreak + FPad +'            SourceRect.Right = '+ img1.Source.Items[I].MultiResBitmap.Items[0].Bitmap.Width.ToString +
+          sLineBreak + FPad +'            SourceRect.Bottom = '+ img1.Source.Items[I].MultiResBitmap.Items[0].Bitmap.Height.ToString +
+          sLineBreak + FPad +'        end>'+
+          sLineBreak + FPad +'    end';
+
+          if Pred(img1.Source.Count) = I then
+            Result := Result +'>';
         end;
 
       finally
-        stream.Free;
+        img1.Free;
       end;
     finally
       Lgraphic.Free;
@@ -113,16 +156,16 @@ begin
   end;
 end;
 
-function StreamToHex(ms:TMemoryStream; LineLen:integer): String;
+procedure StreamToHex(ms:TMemoryStream; LineLen: Integer; var sResult: String);
 var
   s: String;
-  t: Ansistring;
+  t: AnsiString;
 begin
   SetLength(t, ms.Size * 2);
-  BinToHex(ms.Memory^, Pansichar(t), ms.Size);
+  BinToHex(ms.Memory^, PAnsiChar(t), ms.Size);
   repeat
     s := Copy(String(t), 1, LineLen);
-    Result := Result + sLineBreak + FPad +'            '+ s;
+    sResult := sResult + sLineBreak + FPad +'            '+ s;
     Delete(t, 1, LineLen);
   until t = '';
 end;
